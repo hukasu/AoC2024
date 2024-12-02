@@ -3,33 +3,33 @@ use std::{
     io::{BufRead, BufReader, Error, Read},
 };
 
+use crate::skip_at::SkipAt;
+
 #[derive(Debug, Default)]
 struct Safety {
     previous: u32,
-    increasing: u32,
-    decreasing: u32,
-    stagnant: u32,
+    increasing: bool,
+    decreasing: bool,
+    stagnant: bool,
     max_change: u32,
 }
 
-fn test_safety(levels: impl Iterator<Item = u32>, threshold: u32) -> bool {
+fn test_safety(levels: impl Iterator<Item = u32>) -> bool {
     let safety = levels.fold(Safety::default(), |mut safety, level| {
         if safety.previous == 0 {
             safety.previous = level;
         } else {
             let cmp = safety.previous.cmp(&level);
-            match cmp {
-                Ordering::Greater => safety.decreasing += 1,
-                Ordering::Equal => safety.stagnant += 1,
-                Ordering::Less => safety.increasing += 1,
-            }
+            safety.increasing = safety.increasing || cmp == Ordering::Less;
+            safety.decreasing = safety.decreasing || cmp == Ordering::Greater;
+            safety.stagnant = safety.stagnant || cmp == Ordering::Equal;
             safety.max_change = safety.max_change.max(safety.previous.abs_diff(level));
             safety.previous = level;
         }
         safety
     });
-    ((safety.increasing + safety.stagnant <= threshold)
-        || (safety.decreasing + safety.stagnant <= threshold))
+    ((safety.increasing && !safety.decreasing) || (!safety.increasing && safety.decreasing))
+        && !safety.stagnant
         && (1..=3).contains(&safety.max_change)
 }
 
@@ -50,7 +50,7 @@ pub fn part1(input: impl Read) -> usize {
 
     reports
         .map(parse_reports)
-        .filter(|levels| test_safety(levels.clone(), 0))
+        .filter(|levels| test_safety(levels.clone()))
         .count()
 }
 
@@ -61,6 +61,10 @@ pub fn part2(input: impl Read) -> usize {
 
     reports
         .map(parse_reports)
-        .filter(|levels| test_safety(levels.clone(), 1))
+        .filter(|levels| {
+            test_safety(levels.clone())
+                || (0..levels.size_hint().1.unwrap())
+                    .any(|index| test_safety(SkipAt::new(levels.clone(), index)))
+        })
         .count()
 }
