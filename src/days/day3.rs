@@ -49,9 +49,7 @@ fn collect_all_mul(string: &str, disable_conditionals: bool) -> u32 {
                 StateMachine::ReadingDigits2
             }
             (StateMachine::ReadingDigits2, ')') => {
-                if enabled {
-                    muls.push(lhs * rhs);
-                }
+                muls.push(lhs * rhs * enabled as u32);
                 lhs = 0;
                 rhs = 0;
                 StateMachine::Start
