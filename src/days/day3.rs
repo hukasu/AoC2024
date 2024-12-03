@@ -18,7 +18,7 @@ enum StateMachine {
 
 fn collect_all_mul(string: &str, disable_conditionals: bool) -> u32 {
     let mut chars = string.chars();
-    let mut muls = Vec::with_capacity(1000);
+    let mut muls = 0;
 
     let mut state_machine = StateMachine::Start;
 
@@ -49,7 +49,7 @@ fn collect_all_mul(string: &str, disable_conditionals: bool) -> u32 {
                 StateMachine::ReadingDigits2
             }
             (StateMachine::ReadingDigits2, ')') => {
-                muls.push(lhs * rhs * enabled as u32);
+                muls += lhs * rhs * enabled as u32;
                 lhs = 0;
                 rhs = 0;
                 StateMachine::Start
@@ -77,7 +77,7 @@ fn collect_all_mul(string: &str, disable_conditionals: bool) -> u32 {
         }
     }
 
-    muls.iter().sum()
+    muls
 }
 
 pub fn part1(mut reader: impl Read) -> u32 {
