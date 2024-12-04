@@ -46,8 +46,4 @@ MAMMMXMMMM
 MXMXAXMASX"#;
     assert_eq!(aoc2024::day4::part1(data.as_bytes()), 18);
     assert_eq!(aoc2024::day4::part2(data.as_bytes()), 9);
-
-    let data = std::fs::read("inputs/day4.txt").unwrap();
-    dbg!(aoc2024::day4::part1(data.as_slice()));
-    dbg!(aoc2024::day4::part2(data.as_slice()));
 }
