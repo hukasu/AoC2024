@@ -1,18 +1,18 @@
-use std::io::{BufRead, BufReader, Read};
+use std::io::Read;
 
 const PATTERN: &str = "XMAS";
 const INVERSE_PATTERN: &str = "SAMX";
 const XPATTERN: &str = "MAS";
 const XINVERSE_PATTERN: &str = "SAM";
 
-fn test_horizontal(word_search: &[Vec<u8>], pattern: &[u8]) -> usize {
+fn test_horizontal(word_search: &[&[u8]], pattern: &[u8]) -> usize {
     word_search
         .iter()
         .map(|line| line.windows(4).filter(|chunk| chunk == &pattern).count())
         .sum()
 }
 
-fn test_vertical(word_search: &[Vec<u8>], pattern: &[u8]) -> usize {
+fn test_vertical(word_search: &[&[u8]], pattern: &[u8]) -> usize {
     word_search
         .windows(4)
         .map(|window| {
@@ -21,15 +21,15 @@ fn test_vertical(word_search: &[Vec<u8>], pattern: &[u8]) -> usize {
             };
 
             a.iter()
-                .zip(b)
-                .zip(c.iter().zip(d))
+                .zip(b.iter())
+                .zip(c.iter().zip(d.iter()))
                 .filter(|((a, b), (c, d))| [**a, **b, **c, **d] == pattern)
                 .count()
         })
         .sum()
 }
 
-fn test_diagonal_right(word_search: &[Vec<u8>], pattern: &[u8]) -> usize {
+fn test_diagonal_right(word_search: &[&[u8]], pattern: &[u8]) -> usize {
     word_search
         .windows(4)
         .map(|window| {
@@ -46,7 +46,7 @@ fn test_diagonal_right(word_search: &[Vec<u8>], pattern: &[u8]) -> usize {
         .sum()
 }
 
-fn test_diagonal_left(word_search: &[Vec<u8>], pattern: &[u8]) -> usize {
+fn test_diagonal_left(word_search: &[&[u8]], pattern: &[u8]) -> usize {
     word_search
         .windows(4)
         .map(|window| {
@@ -65,7 +65,7 @@ fn test_diagonal_left(word_search: &[Vec<u8>], pattern: &[u8]) -> usize {
 }
 
 #[allow(non_snake_case)]
-fn test_X(word_search: &[Vec<u8>], pattern_left: &[u8], pattern_right: &[u8]) -> usize {
+fn test_X(word_search: &[&[u8]], pattern_left: &[u8], pattern_right: &[u8]) -> usize {
     word_search
         .windows(3)
         .map(|window| {
@@ -91,15 +91,12 @@ fn test_X(word_search: &[Vec<u8>], pattern_left: &[u8], pattern_right: &[u8]) ->
         .sum()
 }
 
-pub fn part1(reader: impl Read) -> usize {
-    let buf = BufReader::with_capacity(100_000, reader);
+pub fn part1(mut reader: impl Read) -> usize {
+    let mut buf = Vec::with_capacity(20_000);
+    reader.read_to_end(&mut buf).unwrap();
 
-    let word_search = buf
-        .lines()
-        .map(|res| res.map(|string| string.bytes().collect::<Vec<_>>()))
-        .collect::<Result<Vec<Vec<u8>>, std::io::Error>>()
-        .unwrap();
-    let word_search_ref = &word_search;
+    let word_search = buf.split(|byte| byte == &b'\n').collect::<Vec<_>>();
+    let word_search_ref = word_search.as_slice();
 
     std::thread::scope(|scope| {
         let handles = [
@@ -120,15 +117,12 @@ pub fn part1(reader: impl Read) -> usize {
     })
 }
 
-pub fn part2(reader: impl Read) -> usize {
-    let buf = BufReader::with_capacity(100_000, reader);
+pub fn part2(mut reader: impl Read) -> usize {
+    let mut buf = Vec::with_capacity(20_000);
+    reader.read_to_end(&mut buf).unwrap();
 
-    let word_search = buf
-        .lines()
-        .map(|res| res.map(|string| string.bytes().collect::<Vec<_>>()))
-        .collect::<Result<Vec<Vec<u8>>, std::io::Error>>()
-        .unwrap();
-    let word_search_ref = &word_search;
+    let word_search = buf.split(|byte| byte == &b'\n').collect::<Vec<_>>();
+    let word_search_ref = word_search.as_slice();
 
     std::thread::scope(|scope| {
         let handles = [
