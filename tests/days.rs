@@ -31,3 +31,23 @@ fn day3() {
     let data = "xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))";
     assert_eq!(aoc2024::day3::part2(data.as_bytes()), 48);
 }
+
+#[test]
+fn day4() {
+    let data = r#"MMMSXXMASM
+MSAMXMSMSA
+AMXSXMAAMM
+MSAMASMSMX
+XMASAMXAMM
+XXAMMXXAMA
+SMSMSASXSS
+SAXAMASAAA
+MAMMMXMMMM
+MXMXAXMASX"#;
+    assert_eq!(aoc2024::day4::part1(data.as_bytes()), 18);
+    assert_eq!(aoc2024::day4::part2(data.as_bytes()), 9);
+
+    let data = std::fs::read("inputs/day4.txt").unwrap();
+    dbg!(aoc2024::day4::part1(data.as_slice()));
+    dbg!(aoc2024::day4::part2(data.as_slice()));
+}
