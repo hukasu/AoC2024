@@ -44,6 +44,17 @@ fn criterion_benchmark(c: &mut Criterion) {
     c.bench_function("day4_part2", |b| {
         b.iter(|| aoc2024::day4::part2(data.as_slice()))
     });
+
+    ///////////////
+    //// Day 5 ////
+    ///////////////
+    let data = std::fs::read("inputs/day5.txt").unwrap();
+    c.bench_function("day5_part1", |b| {
+        b.iter(|| aoc2024::day5::part1(data.as_slice()))
+    });
+    c.bench_function("day5_part2", |b| {
+        b.iter(|| aoc2024::day5::part2(data.as_slice()))
+    });
 }
 
 criterion_group!(benches, criterion_benchmark);
