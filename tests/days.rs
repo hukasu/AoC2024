@@ -81,3 +81,19 @@ fn day5() {
     assert_eq!(aoc2024::day5::part1(data.as_bytes()), 143);
     assert_eq!(aoc2024::day5::part2(data.as_bytes()), 123);
 }
+
+#[test]
+fn day6() {
+    let data = r#"....#.....
+.........#
+..........
+..#.......
+.......#..
+..........
+.#..^.....
+........#.
+#.........
+......#..."#;
+    assert_eq!(aoc2024::day6::part1(data.as_bytes()), 41);
+    assert_eq!(aoc2024::day6::part2(data.as_bytes()), 6);
+}

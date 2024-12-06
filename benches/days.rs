@@ -1,60 +1,24 @@
 use criterion::{criterion_group, criterion_main, Criterion};
 
+macro_rules! make_day_bench {
+    ($c:expr, $day:ident) => {
+        let data = std::fs::read(format!("inputs/{}.txt", stringify!($day))).unwrap();
+        $c.bench_function(&format!("{}_part1", stringify!($day)), |b| {
+            b.iter(|| aoc2024::$day::part1(data.as_slice()))
+        });
+        $c.bench_function(&format!("{}_part2", stringify!($day)), |b| {
+            b.iter(|| aoc2024::$day::part2(data.as_slice()))
+        });
+    };
+}
+
 fn criterion_benchmark(c: &mut Criterion) {
-    ///////////////
-    //// Day 1 ////
-    ///////////////
-    let data = std::fs::read("inputs/day1.txt").unwrap();
-    c.bench_function("day1_part1", |b| {
-        b.iter(|| aoc2024::day1::part1(data.as_slice()))
-    });
-    c.bench_function("day1_part2", |b| {
-        b.iter(|| aoc2024::day1::part2(data.as_slice()))
-    });
-
-    ///////////////
-    //// Day 2 ////
-    ///////////////
-    let data = std::fs::read("inputs/day2.txt").unwrap();
-    c.bench_function("day2_part1", |b| {
-        b.iter(|| aoc2024::day2::part1(data.as_slice()))
-    });
-    c.bench_function("day2_part2", |b| {
-        b.iter(|| aoc2024::day2::part2(data.as_slice()))
-    });
-
-    ///////////////
-    //// Day 3 ////
-    ///////////////
-    let data = std::fs::read("inputs/day3.txt").unwrap();
-    c.bench_function("day3_part1", |b| {
-        b.iter(|| aoc2024::day3::part1(data.as_slice()))
-    });
-    c.bench_function("day3_part2", |b| {
-        b.iter(|| aoc2024::day3::part2(data.as_slice()))
-    });
-
-    ///////////////
-    //// Day 4 ////
-    ///////////////
-    let data = std::fs::read("inputs/day4.txt").unwrap();
-    c.bench_function("day4_part1", |b| {
-        b.iter(|| aoc2024::day4::part1(data.as_slice()))
-    });
-    c.bench_function("day4_part2", |b| {
-        b.iter(|| aoc2024::day4::part2(data.as_slice()))
-    });
-
-    ///////////////
-    //// Day 5 ////
-    ///////////////
-    let data = std::fs::read("inputs/day5.txt").unwrap();
-    c.bench_function("day5_part1", |b| {
-        b.iter(|| aoc2024::day5::part1(data.as_slice()))
-    });
-    c.bench_function("day5_part2", |b| {
-        b.iter(|| aoc2024::day5::part2(data.as_slice()))
-    });
+    make_day_bench!(c, day1);
+    make_day_bench!(c, day2);
+    make_day_bench!(c, day3);
+    make_day_bench!(c, day4);
+    make_day_bench!(c, day5);
+    make_day_bench!(c, day6);
 }
 
 criterion_group!(benches, criterion_benchmark);
