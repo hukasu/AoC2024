@@ -58,14 +58,6 @@ pub fn part2(reader: impl Read) -> u64 {
     let mut disk_map_indexes = build_disk_map(buf)
         .filter(|disk_map| !matches!(disk_map, DiskMap::Free(_, 0)))
         .collect::<Vec<_>>();
-    let stots = disk_map_indexes
-        .iter()
-        .flat_map(|disk_map| match disk_map {
-            // Adding one here because 0 is used as free space
-            DiskMap::File(id, len) => vec![id + 1; usize::try_from(*len).unwrap()],
-            DiskMap::Free(_, len) => vec![0; usize::try_from(*len).unwrap()],
-        })
-        .count();
 
     let mut front_i = 0;
     let mut back_i = disk_map_indexes.len() - 1;
@@ -111,17 +103,6 @@ pub fn part2(reader: impl Read) -> u64 {
         front_i = 0;
     }
 
-    assert_eq!(
-        stots,
-        disk_map_indexes
-            .iter()
-            .flat_map(|disk_map| match disk_map {
-                // Adding one here because 0 is used as free space
-                DiskMap::File(id, len) => vec![id + 1; usize::try_from(*len).unwrap()],
-                DiskMap::Free(_, len) => vec![0; usize::try_from(*len).unwrap()],
-            })
-            .count()
-    );
     disk_map_indexes
         .iter()
         .flat_map(|diskmap| match diskmap {
