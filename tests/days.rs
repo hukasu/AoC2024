@@ -137,3 +137,17 @@ fn day9() {
     assert_eq!(aoc2024::day9::part1(data.as_bytes()), 1928);
     assert_eq!(aoc2024::day9::part2(data.as_bytes()), 2858);
 }
+
+#[test]
+fn day10() {
+    let data = r#"89010123
+78121874
+87430965
+96549874
+45678903
+32019012
+01329801
+10456732"#;
+    assert_eq!(aoc2024::day10::part1(data.as_bytes()), 36);
+    assert_eq!(aoc2024::day10::part2(data.as_bytes()), 81);
+}
