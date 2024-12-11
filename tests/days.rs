@@ -151,3 +151,9 @@ fn day10() {
     assert_eq!(aoc2024::day10::part1(data.as_bytes()), 36);
     assert_eq!(aoc2024::day10::part2(data.as_bytes()), 81);
 }
+
+#[test]
+fn day11() {
+    let data = r#"125 17"#;
+    assert_eq!(aoc2024::day11::part1(data.as_bytes()), 55312);
+}
