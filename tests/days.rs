@@ -203,3 +203,23 @@ MMMISSJEEE"#;
     assert_eq!(aoc2024::day12::part1(data.as_bytes()), 1930);
     assert_eq!(aoc2024::day12::part2(data.as_bytes()), 1206);
 }
+
+#[test]
+fn day13() {
+    let data = r#"Button A: X+94, Y+34
+Button B: X+22, Y+67
+Prize: X=8400, Y=5400
+
+Button A: X+26, Y+66
+Button B: X+67, Y+21
+Prize: X=12748, Y=12176
+
+Button A: X+17, Y+86
+Button B: X+84, Y+37
+Prize: X=7870, Y=6450
+
+Button A: X+69, Y+23
+Button B: X+27, Y+71
+Prize: X=18641, Y=10279"#;
+    assert_eq!(aoc2024::day13::part1(data.as_bytes()), 480);
+}
