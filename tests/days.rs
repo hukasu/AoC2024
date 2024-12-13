@@ -157,3 +157,49 @@ fn day11() {
     let data = r#"125 17"#;
     assert_eq!(aoc2024::day11::part1(data.as_bytes()), 55312);
 }
+
+#[test]
+fn day12() {
+    let data = r#"AAAA
+BBCD
+BBCC
+EEEC"#;
+    assert_eq!(aoc2024::day12::part1(data.as_bytes()), 140);
+    assert_eq!(aoc2024::day12::part2(data.as_bytes()), 80);
+
+    let data = r#"OOOOO
+OXOXO
+OOOOO
+OXOXO
+OOOOO"#;
+    assert_eq!(aoc2024::day12::part1(data.as_bytes()), 772);
+    assert_eq!(aoc2024::day12::part2(data.as_bytes()), 436);
+
+    let data = r#"EEEEE
+EXXXX
+EEEEE
+EXXXX
+EEEEE"#;
+    assert_eq!(aoc2024::day12::part2(data.as_bytes()), 236);
+
+    let data = r#"AAAAAA
+AAABBA
+AAABBA
+ABBAAA
+ABBAAA
+AAAAAA"#;
+    assert_eq!(aoc2024::day12::part2(data.as_bytes()), 368);
+
+    let data = r#"RRRRIICCFF
+RRRRIICCCF
+VVRRRCCFFF
+VVRCCCJFFF
+VVVVCJJCFE
+VVIVCCJJEE
+VVIIICJJEE
+MIIIIIJJEE
+MIIISIJEEE
+MMMISSJEEE"#;
+    assert_eq!(aoc2024::day12::part1(data.as_bytes()), 1930);
+    assert_eq!(aoc2024::day12::part2(data.as_bytes()), 1206);
+}
