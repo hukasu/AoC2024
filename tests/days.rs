@@ -223,3 +223,22 @@ Button B: X+27, Y+71
 Prize: X=18641, Y=10279"#;
     assert_eq!(aoc2024::day13::part1(data.as_bytes()), 480);
 }
+
+#[test]
+fn day14() {
+    aoc2024::day14::BOUNDS.set((11, 7)).unwrap();
+
+    let data = r#"p=0,4 v=3,-3
+p=6,3 v=-1,-3
+p=10,3 v=-1,2
+p=2,0 v=2,-1
+p=0,0 v=1,3
+p=3,0 v=-2,-2
+p=7,6 v=-1,-3
+p=3,0 v=-1,-2
+p=9,3 v=2,3
+p=7,3 v=-1,2
+p=2,4 v=2,-3
+p=9,5 v=-3,-3"#;
+    assert_eq!(aoc2024::day14::part1(data.as_bytes()), 12);
+}
