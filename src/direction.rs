@@ -17,6 +17,15 @@ impl Direction {
         }
     }
 
+    pub fn turn_left(self) -> Self {
+        match self {
+            Self::North => Self::West,
+            Self::East => Self::North,
+            Self::South => Self::East,
+            Self::West => Self::South,
+        }
+    }
+
     pub fn step(&self, coord: (usize, usize)) -> (usize, usize) {
         match self {
             Direction::North => (coord.0 - 1, coord.1),
