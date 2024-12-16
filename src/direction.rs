@@ -11,8 +11,8 @@ impl Direction {
     pub fn turn_right(self) -> Self {
         match self {
             Self::North => Self::East,
-            Self::East => Self::South,
             Self::South => Self::West,
+            Self::East => Self::South,
             Self::West => Self::North,
         }
     }
@@ -20,8 +20,8 @@ impl Direction {
     pub fn turn_left(self) -> Self {
         match self {
             Self::North => Self::West,
-            Self::East => Self::North,
             Self::South => Self::East,
+            Self::East => Self::North,
             Self::West => Self::South,
         }
     }
@@ -30,8 +30,8 @@ impl Direction {
         match self {
             Direction::North => (coord.0 - 1, coord.1),
             Direction::South => (coord.0 + 1, coord.1),
-            Direction::East => (coord.0, coord.1 - 1),
-            Direction::West => (coord.0, coord.1 + 1),
+            Direction::East => (coord.0, coord.1 + 1),
+            Direction::West => (coord.0, coord.1 - 1),
         }
     }
 }

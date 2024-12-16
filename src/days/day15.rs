@@ -12,10 +12,10 @@ fn run<T: Read>(reader: T, wide: bool) -> usize {
     buf.read_to_end(&mut moves).unwrap();
 
     for robot_move in moves.into_iter().filter(|c| c != &b'\n').map(|c| match c {
-        b'v' => RobotMove::South,
         b'^' => RobotMove::North,
-        b'<' => RobotMove::East,
-        b'>' => RobotMove::West,
+        b'v' => RobotMove::South,
+        b'>' => RobotMove::East,
+        b'<' => RobotMove::West,
         _ => unreachable!("Not a move"),
     }) {
         warehouse.move_robot(robot_move);
