@@ -1,5 +1,7 @@
 use std::{collections::BTreeSet, sync::Mutex};
 
+use crate::direction::Direction;
+
 #[derive(Debug, Clone)]
 pub struct Walker<'a> {
     lines: Vec<&'a [u8]>,
@@ -177,26 +179,6 @@ impl Iterator for Walker<'_> {
                     None
                 }
             }
-        }
-    }
-}
-
-#[derive(Debug, Default, Clone, Copy, PartialEq, PartialOrd, Eq, Ord)]
-pub enum Direction {
-    #[default]
-    North,
-    South,
-    East,
-    West,
-}
-
-impl Direction {
-    pub fn turn_right(self) -> Self {
-        match self {
-            Self::North => Self::East,
-            Self::East => Self::South,
-            Self::South => Self::West,
-            Self::West => Self::North,
         }
     }
 }

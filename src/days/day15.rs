@@ -1,5 +1,9 @@
 use std::io::{BufRead, BufReader, Read};
 
+use crate::direction::Direction;
+
+type RobotMove = Direction;
+
 fn run<T: Read>(reader: T, wide: bool) -> usize {
     let mut buf = BufReader::with_capacity(10_000, reader);
     let mut warehouse = Warehouse::parse(&mut buf, wide);
@@ -8,10 +12,10 @@ fn run<T: Read>(reader: T, wide: bool) -> usize {
     buf.read_to_end(&mut moves).unwrap();
 
     for robot_move in moves.into_iter().filter(|c| c != &b'\n').map(|c| match c {
-        b'v' => RobotMove::Down,
-        b'^' => RobotMove::Up,
-        b'<' => RobotMove::Left,
-        b'>' => RobotMove::Right,
+        b'v' => RobotMove::South,
+        b'^' => RobotMove::North,
+        b'<' => RobotMove::East,
+        b'>' => RobotMove::West,
         _ => unreachable!("Not a move"),
     }) {
         warehouse.move_robot(robot_move);
@@ -26,25 +30,6 @@ pub fn part1<T: Read>(reader: T) -> usize {
 
 pub fn part2(reader: impl Read) -> usize {
     run(reader, true)
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-enum RobotMove {
-    Up,
-    Down,
-    Left,
-    Right,
-}
-
-impl RobotMove {
-    fn next(&self, coord: (usize, usize)) -> (usize, usize) {
-        match self {
-            RobotMove::Up => (coord.0 - 1, coord.1),
-            RobotMove::Down => (coord.0 + 1, coord.1),
-            RobotMove::Left => (coord.0, coord.1 - 1),
-            RobotMove::Right => (coord.0, coord.1 + 1),
-        }
-    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -137,7 +122,7 @@ impl Warehouse {
     }
 
     fn move_robot(&mut self, robot_move: RobotMove) {
-        let next = robot_move.next(self.robot);
+        let next = robot_move.step(self.robot);
         if self.can_push_box(next, robot_move, true) {
             self.propagate_push(self.robot, robot_move, true);
             self.robot = next;
@@ -162,7 +147,7 @@ impl Warehouse {
             WarehouseTile::Empty => true,
             WarehouseTile::Wall => false,
             WarehouseTile::BoxLeft => {
-                let next = robot_move.next(coord);
+                let next = robot_move.step(coord);
                 let right = (coord.0, coord.1 + 1);
 
                 if right == next {
@@ -177,7 +162,7 @@ impl Warehouse {
                 }
             }
             WarehouseTile::BoxRight => {
-                let next = robot_move.next(coord);
+                let next = robot_move.step(coord);
                 let left = (coord.0, coord.1 - 1);
 
                 if left == next {
@@ -205,7 +190,7 @@ impl Warehouse {
             WarehouseTile::Empty => (),
             WarehouseTile::Wall => unreachable!("Wall should not be part of propagation"),
             WarehouseTile::BoxLeft => {
-                let next = robot_move.next(coord);
+                let next = robot_move.step(coord);
                 let right = (coord.0, coord.1 + 1);
                 if right == next {
                     self.propagate_push(next, robot_move, false);
@@ -219,7 +204,7 @@ impl Warehouse {
                 *self.get_coord_mut(coord) = WarehouseTile::Empty;
             }
             WarehouseTile::BoxRight => {
-                let next = robot_move.next(coord);
+                let next = robot_move.step(coord);
                 let left = (coord.0, coord.1 - 1);
                 if left == next {
                     self.propagate_push(next, robot_move, false);
@@ -233,7 +218,7 @@ impl Warehouse {
                 *self.get_coord_mut(coord) = WarehouseTile::Empty;
             }
             WarehouseTile::Robot => {
-                let next = robot_move.next(coord);
+                let next = robot_move.step(coord);
                 self.propagate_push(next, robot_move, true);
                 *self.get_coord_mut(next) = WarehouseTile::Robot;
                 *self.get_coord_mut(coord) = WarehouseTile::Empty;
