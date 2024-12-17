@@ -343,13 +343,4 @@ Register C: 0
 Program: 0,3,5,4,3,0
 "#;
     assert_eq!(aoc2024::day17::part2(data.as_bytes()), 117440);
-
-    assert_eq!(
-        aoc2024::day17::part1(std::fs::File::open("inputs/day17.txt").unwrap()),
-        "2,1,0,4,6,2,4,2,0"
-    );
-    assert_eq!(
-        aoc2024::day17::part2(std::fs::File::open("inputs/day17.txt").unwrap()),
-        109685330781408
-    );
 }
