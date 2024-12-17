@@ -322,3 +322,34 @@ fn day16() {
     assert_eq!(aoc2024::day16::part1(data.as_bytes()), 11048);
     assert_eq!(aoc2024::day16::part2(data.as_bytes()), 64);
 }
+
+#[test]
+fn day17() {
+    let data = r#"Register A: 729
+Register B: 0
+Register C: 0
+
+Program: 0,1,5,4,3,0
+"#;
+    assert_eq!(
+        aoc2024::day17::part1(data.as_bytes()),
+        "4,6,3,5,6,3,5,2,1,0"
+    );
+
+    let data = r#"Register A: 2024
+Register B: 0
+Register C: 0
+
+Program: 0,3,5,4,3,0
+"#;
+    assert_eq!(aoc2024::day17::part2(data.as_bytes()), 117440);
+
+    assert_eq!(
+        aoc2024::day17::part1(std::fs::File::open("inputs/day17.txt").unwrap()),
+        "2,1,0,4,6,2,4,2,0"
+    );
+    assert_eq!(
+        aoc2024::day17::part2(std::fs::File::open("inputs/day17.txt").unwrap()),
+        109685330781408
+    );
+}
