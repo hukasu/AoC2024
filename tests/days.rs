@@ -376,3 +376,20 @@ fn day18() {
     assert_eq!(aoc2024::day18::part1_for_test(data.as_bytes()), 22);
     assert_eq!(aoc2024::day18::part2_for_test(data.as_bytes()), (6, 1));
 }
+
+#[test]
+fn day19() {
+    let data = r#"r, wr, b, g, bwu, rb, gb, br
+
+brwrr
+bggr
+gbbr
+rrbgbr
+ubwu
+bwurrg
+brgr
+bbrgwb
+"#;
+    assert_eq!(aoc2024::day19::part1(data.as_bytes()), 6);
+    assert_eq!(aoc2024::day19::part2(data.as_bytes()), 16);
+}
