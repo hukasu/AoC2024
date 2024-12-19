@@ -47,7 +47,6 @@ fn parse_input(data: &[u8]) -> (Towels, Vec<&[u8]>) {
 
 fn match_patterns(towels: &Towels, patterns: &[&[u8]]) -> usize {
     let iter = Mutex::new(patterns.iter().filter(|pattern| !pattern.is_empty()));
-    let cache = PatternCache::default();
 
     std::thread::scope(|scope| {
         let (sender, receiver) = std::sync::mpsc::channel();
@@ -55,19 +54,18 @@ fn match_patterns(towels: &Towels, patterns: &[&[u8]]) -> usize {
         for _ in 0..std::thread::available_parallelism().unwrap().get() {
             let sender_clone = sender.clone();
             let iter_ref = &iter;
-            let cache_ref = &cache;
 
             scope.spawn(move || {
                 let sender = sender_clone;
                 let iter = iter_ref;
-                let cache = cache_ref;
+                let mut cache = PatternCache::default();
 
                 let mut pattern_opt = iter.lock().unwrap().next();
                 loop {
                     let Some(pattern) = pattern_opt else {
                         break;
                     };
-                    let possible = pattern_possible(pattern, towels, cache);
+                    let possible = pattern_possible(pattern, towels, &mut cache);
                     if possible {
                         sender.send(()).unwrap();
                     }
@@ -85,7 +83,7 @@ fn match_patterns(towels: &Towels, patterns: &[&[u8]]) -> usize {
 fn pattern_possible<'a>(
     pattern: &'a [u8],
     towels: &Towels<'a>,
-    cache: &PatternCache<'a, bool>,
+    cache: &mut PatternCache<'a, bool>,
 ) -> bool {
     if pattern.is_empty() {
         return true;
@@ -116,7 +114,6 @@ fn pattern_possible<'a>(
 
 fn count_patterns(towels: &Towels, patterns: &[&[u8]]) -> usize {
     let iter = Mutex::new(patterns.iter().filter(|pattern| !pattern.is_empty()));
-    let cache = PatternCache::default();
 
     std::thread::scope(|scope| {
         let (sender, receiver) = std::sync::mpsc::channel();
@@ -124,19 +121,18 @@ fn count_patterns(towels: &Towels, patterns: &[&[u8]]) -> usize {
         for _ in 0..std::thread::available_parallelism().unwrap().get() {
             let sender_clone = sender.clone();
             let iter_ref = &iter;
-            let cache_ref = &cache;
 
             scope.spawn(move || {
                 let sender = sender_clone;
                 let iter = iter_ref;
-                let cache = cache_ref;
+                let mut cache = PatternCache::default();
 
                 let mut pattern_opt = iter.lock().unwrap().next();
                 loop {
                     let Some(pattern) = pattern_opt else {
                         break;
                     };
-                    let possible = possible_patterns(pattern, towels, cache);
+                    let possible = possible_patterns(pattern, towels, &mut cache);
                     sender.send(possible).unwrap();
                     pattern_opt = iter.lock().unwrap().next();
                 }
@@ -152,7 +148,7 @@ fn count_patterns(towels: &Towels, patterns: &[&[u8]]) -> usize {
 fn possible_patterns<'a>(
     pattern: &'a [u8],
     towels: &Towels<'a>,
-    cache: &PatternCache<'a, usize>,
+    cache: &mut PatternCache<'a, usize>,
 ) -> usize {
     if pattern.is_empty() {
         return 1;
@@ -191,18 +187,16 @@ struct Towels<'a> {
 
 #[derive(Debug, Default)]
 struct PatternCache<'a, T> {
-    cache: Mutex<HashMap<&'a [u8], T>>,
+    cache: HashMap<&'a [u8], T>,
 }
 
 impl<'a, T: Copy + PartialEq + Debug> PatternCache<'a, T> {
     fn get(&self, key: &[u8]) -> Option<T> {
-        let guard = self.cache.lock().unwrap();
-        guard.get(key).copied()
+        self.cache.get(key).copied()
     }
 
-    fn insert(&self, key: &'a [u8], value: T) {
-        let mut guard = self.cache.lock().unwrap();
-        if let Some(exists) = guard.insert(key, value) {
+    fn insert(&mut self, key: &'a [u8], value: T) {
+        if let Some(exists) = self.cache.insert(key, value) {
             assert_eq!(
                 exists, value,
                 "In case there is an attempt to insert on the same key, value should be equals"
