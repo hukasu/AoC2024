@@ -1,3 +1,4 @@
+pub mod coord;
 mod days;
 pub mod direction;
 pub mod maze;

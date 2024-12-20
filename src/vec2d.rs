@@ -1,5 +1,7 @@
 use std::ops::{Index, IndexMut};
 
+use crate::coord::Coord;
+
 #[derive(Debug)]
 pub struct Vec2d<'a, T> {
     data: &'a mut [T],
@@ -25,16 +27,16 @@ impl<'a, T> Vec2d<'a, T> {
     }
 }
 
-impl<T> Index<(usize, usize)> for Vec2d<'_, T> {
+impl<T> Index<Coord> for Vec2d<'_, T> {
     type Output = T;
 
-    fn index(&self, index: (usize, usize)) -> &Self::Output {
-        &self.data[index.0 * self.width + index.1]
+    fn index(&self, index: Coord) -> &Self::Output {
+        &self.data[index.row * self.width + index.column]
     }
 }
 
-impl<T> IndexMut<(usize, usize)> for Vec2d<'_, T> {
-    fn index_mut(&mut self, index: (usize, usize)) -> &mut Self::Output {
-        &mut self.data[index.0 * self.width + index.1]
+impl<T> IndexMut<Coord> for Vec2d<'_, T> {
+    fn index_mut(&mut self, index: Coord) -> &mut Self::Output {
+        &mut self.data[index.row * self.width + index.column]
     }
 }

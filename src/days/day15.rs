@@ -1,6 +1,6 @@
 use std::io::{BufRead, BufReader, Read};
 
-use crate::direction::Direction;
+use crate::{coord::Coord, direction::Direction};
 
 type RobotMove = Direction;
 
@@ -43,9 +43,9 @@ enum WarehouseTile {
 
 #[derive(Debug)]
 struct Warehouse {
-    robot: (usize, usize),
+    robot: Coord,
     map: Vec<WarehouseTile>,
-    dimensions: (usize, usize),
+    dimensions: Coord,
     wide: bool,
 }
 
@@ -58,14 +58,14 @@ impl Warehouse {
             .take_while(|(_, line)| !line.as_ref().unwrap().is_empty())
             .fold(
                 Warehouse {
-                    robot: (0, 0),
+                    robot: Coord::default(),
                     map: Vec::with_capacity(10_000),
-                    dimensions: (0, 0),
+                    dimensions: Coord::default(),
                     wide,
                 },
                 |mut warehouse, (row, line)| {
                     let line = line.unwrap();
-                    warehouse.dimensions = ((row + 1), line.len() * multiplier);
+                    warehouse.dimensions = Coord::new(row + 1, line.len() * multiplier);
 
                     for (column, c) in line.chars().enumerate() {
                         match c {
@@ -92,7 +92,7 @@ impl Warehouse {
                                 if wide {
                                     warehouse.map.push(WarehouseTile::Empty);
                                 }
-                                warehouse.robot = (row, column * multiplier)
+                                warehouse.robot = Coord::new(row, column * multiplier)
                             }
                             _ => unreachable!("Not a tile"),
                         }
@@ -108,8 +108,8 @@ impl Warehouse {
             .iter()
             .enumerate()
             .map(|(i, tile)| {
-                let row = i / self.dimensions.1;
-                let column = i % self.dimensions.1;
+                let row = i / self.dimensions.column;
+                let column = i % self.dimensions.column;
                 match tile {
                     WarehouseTile::Empty
                     | WarehouseTile::Wall
@@ -129,26 +129,21 @@ impl Warehouse {
         }
     }
 
-    fn get_coord(&self, coord: (usize, usize)) -> WarehouseTile {
-        self.map[coord.0 * self.dimensions.1 + coord.1]
+    fn get_coord(&self, coord: Coord) -> WarehouseTile {
+        self.map[coord.row * self.dimensions.column + coord.column]
     }
 
-    fn get_coord_mut(&mut self, coord: (usize, usize)) -> &mut WarehouseTile {
-        &mut self.map[coord.0 * self.dimensions.1 + coord.1]
+    fn get_coord_mut(&mut self, coord: Coord) -> &mut WarehouseTile {
+        &mut self.map[coord.row * self.dimensions.column + coord.column]
     }
 
-    fn can_push_box(
-        &mut self,
-        coord: (usize, usize),
-        robot_move: RobotMove,
-        check_sides: bool,
-    ) -> bool {
+    fn can_push_box(&mut self, coord: Coord, robot_move: RobotMove, check_sides: bool) -> bool {
         match self.get_coord(coord) {
             WarehouseTile::Empty => true,
             WarehouseTile::Wall => false,
             WarehouseTile::BoxLeft => {
                 let next = robot_move.step(coord);
-                let right = (coord.0, coord.1 + 1);
+                let right = coord + (0, 1);
 
                 if right == next {
                     self.can_push_box(next, robot_move, false)
@@ -163,7 +158,7 @@ impl Warehouse {
             }
             WarehouseTile::BoxRight => {
                 let next = robot_move.step(coord);
-                let left = (coord.0, coord.1 - 1);
+                let left = coord - (0, 1);
 
                 if left == next {
                     self.can_push_box(next, robot_move, false)
@@ -180,18 +175,13 @@ impl Warehouse {
         }
     }
 
-    fn propagate_push(
-        &mut self,
-        coord: (usize, usize),
-        robot_move: RobotMove,
-        propagate_sides: bool,
-    ) {
+    fn propagate_push(&mut self, coord: Coord, robot_move: RobotMove, propagate_sides: bool) {
         match self.get_coord(coord) {
             WarehouseTile::Empty => (),
             WarehouseTile::Wall => unreachable!("Wall should not be part of propagation"),
             WarehouseTile::BoxLeft => {
                 let next = robot_move.step(coord);
-                let right = (coord.0, coord.1 + 1);
+                let right = coord + (0, 1);
                 if right == next {
                     self.propagate_push(next, robot_move, false);
                 } else {
@@ -205,7 +195,7 @@ impl Warehouse {
             }
             WarehouseTile::BoxRight => {
                 let next = robot_move.step(coord);
-                let left = (coord.0, coord.1 - 1);
+                let left = coord - (0, 1);
                 if left == next {
                     self.propagate_push(next, robot_move, false);
                 } else {

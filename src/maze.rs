@@ -3,30 +3,24 @@ use std::{
     collections::{BTreeMap, BTreeSet, VecDeque},
 };
 
-use crate::{direction::Direction, vec2d::Vec2d};
+use crate::{coord::Coord, direction::Direction, vec2d::Vec2d};
 
 type MazeTiles = Vec<usize>;
 type MazeContextQueue = VecDeque<MazeContextQueueItem>;
-type MazeContextQueueItem = (
-    (usize, usize),
-    usize,
-    Direction,
-    BTreeSet<(usize, usize)>,
-    bool,
-);
-type SidePaths = BTreeMap<(usize, usize), BTreeMap<Direction, (usize, BTreeSet<(usize, usize)>)>>;
+type MazeContextQueueItem = (Coord, usize, Direction, BTreeSet<Coord>, bool);
+type SidePaths = BTreeMap<Coord, BTreeMap<Direction, (usize, BTreeSet<Coord>)>>;
 
 pub struct Maze<'a> {
     maze: Vec2d<'a, u8>,
-    start: (usize, usize),
-    end: (usize, usize),
+    start: Coord,
+    end: Coord,
     turn_cost: usize,
 }
 
 struct MazeContext<'a> {
     queue: MazeContextQueue,
     maze_tiles: Vec2d<'a, usize>,
-    main_path: BTreeSet<(usize, usize)>,
+    main_path: BTreeSet<Coord>,
     side_paths: SidePaths,
 }
 
@@ -37,13 +31,13 @@ impl<'a> Maze<'a> {
         let width = maze[0].len();
 
         let (start, end) = maze.clone().into_iter().enumerate().fold(
-            ((0, 0), (0, 0)),
+            (Coord::default(), Coord::default()),
             |mut coords, (row, line)| {
                 line.iter().enumerate().for_each(|(column, tile)| {
                     if *tile == b'S' {
-                        coords.0 = (row, column);
+                        coords.0 = Coord::new(row, column);
                     } else if *tile == b'E' {
-                        coords.1 = (row, column);
+                        coords.1 = Coord::new(row, column);
                     }
                 });
                 coords
@@ -67,15 +61,15 @@ impl<'a> Maze<'a> {
         self.maze.height()
     }
 
-    pub fn start(&self) -> (usize, usize) {
+    pub fn start(&self) -> Coord {
         self.start
     }
 
-    pub fn end(&self) -> (usize, usize) {
+    pub fn end(&self) -> Coord {
         self.end
     }
 
-    pub fn calculate_tile_scores(&self) -> (MazeTiles, BTreeSet<(usize, usize)>) {
+    pub fn calculate_tile_scores(&self) -> (MazeTiles, BTreeSet<Coord>) {
         let start = self.start();
         let end = self.end();
         assert_eq!(self.maze[start], b'S');

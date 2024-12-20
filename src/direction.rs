@@ -1,3 +1,5 @@
+use crate::coord::Coord;
+
 #[derive(Debug, Default, Clone, Copy, PartialEq, PartialOrd, Eq, Ord)]
 pub enum Direction {
     #[default]
@@ -26,12 +28,12 @@ impl Direction {
         }
     }
 
-    pub fn step(&self, coord: (usize, usize)) -> (usize, usize) {
+    pub fn step(&self, coord: Coord) -> Coord {
         match self {
-            Direction::North => (coord.0 - 1, coord.1),
-            Direction::South => (coord.0 + 1, coord.1),
-            Direction::East => (coord.0, coord.1 + 1),
-            Direction::West => (coord.0, coord.1 - 1),
+            Direction::North => coord - (1, 0),
+            Direction::South => coord + (1, 0),
+            Direction::East => coord + (0, 1),
+            Direction::West => coord - (0, 1),
         }
     }
 }

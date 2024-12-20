@@ -1,3 +1,7 @@
+use aoc2024::coord::Coord;
+
+use aoc2024::coord::Coord;
+
 #[test]
 fn day1() {
     let data = r#"3   4
@@ -372,7 +376,10 @@ fn day18() {
 2,0
 "#;
     assert_eq!(aoc2024::day18::part1_for_test(data.as_bytes()), 22);
-    assert_eq!(aoc2024::day18::part2_for_test(data.as_bytes()), (6, 1));
+    assert_eq!(
+        aoc2024::day18::part2_for_test(data.as_bytes()),
+        Coord::new(6, 1)
+    );
 }
 
 #[test]
