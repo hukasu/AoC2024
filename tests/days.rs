@@ -1,7 +1,5 @@
 use aoc2024::coord::Coord;
 
-use aoc2024::coord::Coord;
-
 #[test]
 fn day1() {
     let data = r#"3   4
@@ -397,4 +395,25 @@ bbrgwb
 "#;
     assert_eq!(aoc2024::day19::part1(data.as_bytes()), 6);
     assert_eq!(aoc2024::day19::part2(data.as_bytes()), 16);
+}
+
+#[test]
+fn day20() {
+    let data = r#"###############
+#...#...#.....#
+#.#.#.#.#.###.#
+#S#...#.#.#...#
+#######.#.#.###
+#######.#.#...#
+#######.#.###.#
+###..E#...#...#
+###.#######.###
+#...###...#...#
+#.#####.#.###.#
+#.#...#.#.#...#
+#.#.#.#.#.#.###
+#...#...#...###
+###############"#;
+    assert_eq!(aoc2024::day20::part1(data.as_bytes()), 0);
+    assert_eq!(aoc2024::day20::part2(data.as_bytes()), 0);
 }
