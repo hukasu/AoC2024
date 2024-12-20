@@ -37,16 +37,37 @@ fn cheat(
 ) -> BTreeMap<usize, usize> {
     let mut map = BTreeMap::new();
 
-    for tile in main_path {
-        for (_, cost_cut) in find_reachable(*tile, tile_cost, cheat_len)
-            .into_iter()
-            .filter(|(next, _)| tile_cost[*next] != usize::MAX)
-        {
-            map.entry(cost_cut)
-                .and_modify(|count| *count += 1)
-                .or_insert(1);
+    let paralelism = std::thread::available_parallelism().unwrap().get();
+
+    let main_path = Vec::from_iter(main_path);
+    let iters = main_path.chunks((main_path.len() / paralelism) + 1);
+    std::thread::scope(|scope| {
+        let (sender, receiver) = std::sync::mpsc::channel();
+
+        for iter_ref in iters {
+            let sender_clone = sender.clone();
+
+            scope.spawn(move || {
+                let sender = sender_clone;
+
+                for tile in iter_ref {
+                    sender
+                        .send(find_reachable(**tile, tile_cost, cheat_len))
+                        .unwrap();
+                }
+            });
         }
-    }
+
+        std::mem::drop(sender);
+
+        for tile_reachables in receiver {
+            for (_, cost_cut) in tile_reachables {
+                map.entry(cost_cut)
+                    .and_modify(|count| *count += 1)
+                    .or_insert(1);
+            }
+        }
+    });
 
     map
 }
