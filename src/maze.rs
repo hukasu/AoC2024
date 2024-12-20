@@ -190,6 +190,12 @@ impl<'a> Maze<'a> {
                         .or_insert(BTreeMap::from_iter([(*direction, (*score, path.clone()))]));
                 }
                 Ordering::Less => {
+                    // `retry` is needed due to merging at a junction.
+                    //
+                    // This junction for example is valid for both paths.
+                    // #### 3007 ####
+                    // 2005 2006 ####
+                    // #### 3005 ####
                     if *retry && step != self.end() {
                         let mut step_path = path.clone();
                         step_path.insert(step);
