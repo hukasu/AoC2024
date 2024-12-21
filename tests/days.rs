@@ -417,3 +417,15 @@ fn day20() {
     assert_eq!(aoc2024::day20::part1(data.as_bytes()), 0);
     assert_eq!(aoc2024::day20::part2(data.as_bytes()), 0);
 }
+
+#[test]
+fn day21() {
+    let data = r#"029A
+980A
+179A
+456A
+379A
+"#;
+    assert_eq!(aoc2024::day21::part1(data.as_bytes()), 126384);
+    assert_eq!(aoc2024::day21::part2(data.as_bytes()), 154115708116294);
+}
