@@ -429,3 +429,29 @@ fn day21() {
     assert_eq!(aoc2024::day21::part1(data.as_bytes()), 126384);
     assert_eq!(aoc2024::day21::part2(data.as_bytes()), 154115708116294);
 }
+
+#[test]
+fn day22() {
+    let data = r#"1
+10
+100
+2024
+"#;
+    assert_eq!(aoc2024::day22::part1(data.as_bytes()), 37327623);
+
+    let data = r#"1
+2
+3
+2024
+"#;
+    assert_eq!(aoc2024::day22::part2(data.as_bytes()), 23);
+
+    assert_eq!(
+        aoc2024::day22::part1(std::fs::File::open("inputs/day22.txt").unwrap()),
+        18317943467
+    );
+    assert_eq!(
+        aoc2024::day22::part2(std::fs::File::open("inputs/day22.txt").unwrap()),
+        2018
+    );
+}
