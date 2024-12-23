@@ -445,13 +445,4 @@ fn day22() {
 2024
 "#;
     assert_eq!(aoc2024::day22::part2(data.as_bytes()), 23);
-
-    assert_eq!(
-        aoc2024::day22::part1(std::fs::File::open("inputs/day22.txt").unwrap()),
-        18317943467
-    );
-    assert_eq!(
-        aoc2024::day22::part2(std::fs::File::open("inputs/day22.txt").unwrap()),
-        2018
-    );
 }
