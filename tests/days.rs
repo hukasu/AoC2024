@@ -446,3 +446,42 @@ fn day22() {
 "#;
     assert_eq!(aoc2024::day22::part2(data.as_bytes()), 23);
 }
+
+#[test]
+fn day23() {
+    let data = r#"kh-tc
+qp-kh
+de-cg
+ka-co
+yn-aq
+qp-ub
+cg-tb
+vc-aq
+tb-ka
+wh-tc
+yn-cg
+kh-ub
+ta-co
+de-co
+tc-td
+tb-wq
+wh-td
+ta-ka
+td-qp
+aq-cg
+wq-ub
+ub-vc
+de-ta
+wq-aq
+wq-vc
+wh-yn
+ka-de
+kh-ta
+co-tc
+wh-qp
+tb-vc
+td-yn
+"#;
+    assert_eq!(aoc2024::day23::part1(data.as_bytes()), 7);
+    assert_eq!(aoc2024::day23::part2(data.as_bytes()), "co,de,ka,ta");
+}
