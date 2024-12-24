@@ -102,13 +102,14 @@ fn get_fully_connected<'a>(
         return;
     };
 
+    get_fully_connected(tail, all_connections, partial.clone(), fully_connected);
+
     let head_node_connections = all_connections.get(head_node).unwrap();
     if partial
         .iter()
         .all(|group_node| head_node_connections.contains(group_node))
     {
         partial.push(head_node);
+        get_fully_connected(tail, all_connections, partial, fully_connected);
     }
-
-    get_fully_connected(tail, all_connections, partial, fully_connected);
 }
